@@ -1,0 +1,30 @@
+import tweepy
+import csv
+
+
+#Keys and Tokens
+consumer_key = "xxxxxx"
+consumer_secret = "xxxxx"
+access_token = "xxxxxxxx"
+access_token_secret = "xxxxxxxx"
+
+#Authorization
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret )
+api = tweepy.API(auth,wait_on_rate_limit=True)
+
+
+#Comma separated values file 
+csvFile = open('DownloadNow', 'a')
+csvWriter = csv.writer(csvFile)
+
+#Search words
+search_words = '"zoom.us" AND "download"'
+new_search = search_words + " -filter:retweets"
+
+
+#Search filter
+for tweet in tweepy.Cursor(api.search,q=new_search,
+                          lang="en",
+                          since_id=0).items():
+   csvWriter.writerow([tweet.created_at, tweet.text.encode('utf-8'),tweet.user.screen_name.encode('utf-8'), tweet.user.location.encode('utf-8')])
